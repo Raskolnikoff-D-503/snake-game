@@ -30,6 +30,12 @@ const isControlKeys = (value: string): value is ControlKeys =>
 const SPEED = 100;
 
 const getRandomCoordinates = (): number => Math.floor(Math.random() * 400);
+
+const hasDuplicates = (array: (string | number)[]): boolean =>
+  array.some((item, index) => {
+    return array.indexOf(item) !== index;
+  });
+
 const boardCells: null[] = new Array(400).fill(null);
 const initialSnakeCoords: SnakeBodyPart[] = [
   {
@@ -69,6 +75,7 @@ export const App = () => {
     setMoveElementCoords([]);
     setSnakeCoords(initialSnakeCoords);
     setAppleCoords(getRandomCoordinates());
+    setNewSnakeBodyPart(null);
   }, []);
 
   useEffect(() => {
@@ -84,12 +91,16 @@ export const App = () => {
   }, [snakeCoords]);
 
   useEffect(() => {
-    console.log(snakeCoords.length, snakeCoords);
-
     let moveSnakeHandler: NodeJS.Timeout | undefined;
     clearTimeout(moveSnakeHandler);
 
     if (snakeMove !== null) {
+      if (hasDuplicates(snakeCoords.map((item) => item.coords))) {
+        console.log('Game Is Over');
+
+        setSnakeMove(null);
+      }
+
       moveSnakeHandler = setTimeout(() => {
         setSnakeCoords((current) => {
           return current.map((item) => {
@@ -103,25 +114,24 @@ export const App = () => {
           });
         });
       }, SPEED);
-    }
+      const lastElement = snakeCoords.at(-1);
 
-    const lastElement = snakeCoords.at(-1);
+      if (
+        newSnakeBodyPart !== null &&
+        lastElement &&
+        !snakeCoords.find((item) => item.coords === newSnakeBodyPart)
+      ) {
+        setSnakeCoords((current) => [
+          ...current,
+          {coords: newSnakeBodyPart, direction: lastElement.direction},
+        ]);
+        setNewSnakeBodyPart(null);
+      }
 
-    if (
-      newSnakeBodyPart !== null &&
-      lastElement &&
-      !snakeCoords.find((item) => item.coords === newSnakeBodyPart)
-    ) {
-      setSnakeCoords((current) => [
-        ...current,
-        {coords: newSnakeBodyPart, direction: lastElement.direction},
-      ]);
-      setNewSnakeBodyPart(null);
-    }
-
-    if (snakeCoords?.find((coords) => coords.coords === appleCoords)) {
-      setNewSnakeBodyPart(appleCoords);
-      setAppleCoords(getRandomCoordinates());
+      if (snakeCoords?.find((coords) => coords.coords === appleCoords)) {
+        setNewSnakeBodyPart(appleCoords);
+        setAppleCoords(getRandomCoordinates());
+      }
     }
 
     return () => {
