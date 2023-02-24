@@ -19,8 +19,6 @@ export const Cell = ({className, cellCoords, appleCoords, snakeCoords}: Props) =
       className={`${className} ${isAppleOnCurrentCell ? 'apple-placement' : ''} ${
         isSnakeOnCurrentCell ? 'snake-placement' : ''
       }`}
-    >
-      {cellCoords}
-    </div>
+    ></div>
   );
 };

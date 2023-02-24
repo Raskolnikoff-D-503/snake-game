@@ -5,10 +5,8 @@ import './App.scss';
 
 export type SnakeBodyPart = {
   coords: number;
-  direction: number | null;
+  direction: number;
 };
-
-const SPEED = 200;
 
 const DIRECTION = {
   UP: -20,
@@ -24,12 +22,19 @@ const KEYBOARD_DIRECTION = {
   a: DIRECTION.LEFT,
 } as const;
 
+type ControlKeys = keyof typeof KEYBOARD_DIRECTION;
+
+const isControlKeys = (value: string): value is ControlKeys =>
+  value === 'w' || value === 'a' || value === 's' || value === 'd';
+
+const SPEED = 100;
+
 const getRandomCoordinates = (): number => Math.floor(Math.random() * 400);
 const boardCells: null[] = new Array(400).fill(null);
 const initialSnakeCoords: SnakeBodyPart[] = [
   {
     coords: 150,
-    direction: null,
+    direction: DIRECTION.RIGHT,
   },
 ];
 
@@ -38,19 +43,18 @@ export const App = () => {
   const [appleCoords, setAppleCoords] = useState<number>(getRandomCoordinates());
   const [snakeMove, setSnakeMove] = useState<string | null>(null);
   const [moveElementCoords, setMoveElementCoords] = useState<SnakeBodyPart[]>([]);
+  const [newSnakeBodyPart, setNewSnakeBodyPart] = useState<number | null>(null);
 
   const onKeyPressed = useCallback(
     (event: KeyboardEvent) => {
       event.preventDefault();
 
-      if (event.key === 'w' || event.key === 's' || event.key === 'd' || event.key === 'a') {
-        // setMoveElementCoords((current) => {
-        //   return [
-        //     ...current,
-        //     {coords: snakeCoords[0].coords, direction: KEYBOARD_DIRECTION[event.key]},
-        //   ];
-        // });
-        setSnakeMove(event.key);
+      const key = event.key;
+      if (isControlKeys(key)) {
+        setSnakeMove(key);
+        setMoveElementCoords((current) => {
+          return [...current, {coords: snakeCoords[0].coords, direction: KEYBOARD_DIRECTION[key]}];
+        });
       }
     },
     [snakeCoords],
@@ -68,22 +72,20 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log(KEYBOARD_DIRECTION[snakeMove], moveElementCoords.at(-1)?.direction);
     setMoveElementCoords((current) => [
       ...current.reduce<SnakeBodyPart[]>((acc, curr) => {
         if (snakeCoords.find((item) => item.coords === curr.coords)) {
           return [...acc, curr];
         } else {
-          return [...acc];
+          return acc;
         }
       }, []),
-      ...(KEYBOARD_DIRECTION[snakeMove] !== current.at(-1)?.direction
-        ? [{coords: snakeCoords[0].coords, direction: KEYBOARD_DIRECTION[snakeMove]}]
-        : []),
     ]);
-  }, [snakeCoords, snakeMove]);
+  }, [snakeCoords]);
 
   useEffect(() => {
+    console.log(snakeCoords.length, snakeCoords);
+
     let moveSnakeHandler: NodeJS.Timeout | undefined;
     clearTimeout(moveSnakeHandler);
 
@@ -103,22 +105,29 @@ export const App = () => {
       }, SPEED);
     }
 
+    const lastElement = snakeCoords.at(-1);
+
+    if (
+      newSnakeBodyPart !== null &&
+      lastElement &&
+      !snakeCoords.find((item) => item.coords === newSnakeBodyPart)
+    ) {
+      setSnakeCoords((current) => [
+        ...current,
+        {coords: newSnakeBodyPart, direction: lastElement.direction},
+      ]);
+      setNewSnakeBodyPart(null);
+    }
+
+    if (snakeCoords?.find((coords) => coords.coords === appleCoords)) {
+      setNewSnakeBodyPart(appleCoords);
+      setAppleCoords(getRandomCoordinates());
+    }
+
     return () => {
       clearTimeout(moveSnakeHandler);
     };
   }, [snakeMove, snakeCoords]);
-
-  useEffect(() => {
-    if (snakeCoords?.find((coords) => coords.coords === appleCoords)) {
-      setAppleCoords(getRandomCoordinates());
-      setTimeout(() => {
-        setSnakeCoords((current) => [
-          ...current,
-          {coords: appleCoords, direction: current.at(-1).direction},
-        ]);
-      }, SPEED * (snakeCoords.length + 1));
-    }
-  }, [snakeCoords, appleCoords]);
 
   return (
     <div className={'app'}>
