@@ -3,10 +3,7 @@ import {Cell} from './Cell';
 
 import './App.scss';
 
-export type SnakeBodyPart = {
-  coords: number;
-  direction: number;
-};
+const SPEED = 100;
 
 const DIRECTION = {
   UP: -20,
@@ -22,12 +19,15 @@ const KEYBOARD_DIRECTION = {
   a: DIRECTION.LEFT,
 } as const;
 
+export type SnakeBodyPart = {
+  coords: number;
+  direction: number;
+};
+
 type ControlKeys = keyof typeof KEYBOARD_DIRECTION;
 
 const isControlKeys = (value: string): value is ControlKeys =>
   value === 'w' || value === 'a' || value === 's' || value === 'd';
-
-const SPEED = 100;
 
 const getRandomCoordinates = (): number => Math.floor(Math.random() * 400);
 
