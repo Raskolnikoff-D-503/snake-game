@@ -1,12 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const {HotModuleReplacementPlugin} = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const plugins = [
   new HtmlWebpackPlugin({template: './src/index.html'}),
   new CleanWebpackPlugin(),
   new MiniCssExtractPlugin(),
+  new HotModuleReplacementPlugin(),
 ];
 
 const getFileLoaderOptions = () => ({

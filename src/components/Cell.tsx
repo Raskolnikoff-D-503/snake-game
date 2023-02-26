@@ -1,5 +1,5 @@
 import React from 'react';
-import {SnakeBodyPart} from './App';
+import {SnakeBodyPart} from '@/types';
 
 import './Cell.scss';
 
@@ -19,6 +19,8 @@ export const Cell = ({className, cellCoords, appleCoords, snakeCoords}: Props) =
       className={`${className} ${isAppleOnCurrentCell ? 'apple-placement' : ''} ${
         isSnakeOnCurrentCell ? 'snake-placement' : ''
       }`}
-    ></div>
+    >
+      {cellCoords}
+    </div>
   );
 };

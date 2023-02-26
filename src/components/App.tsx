@@ -1,45 +1,16 @@
 import React, {KeyboardEvent, useCallback, useEffect, useState} from 'react';
-import {Cell} from './Cell';
+import {SnakeBodyPart} from '@/types';
+import {Cell} from '@/components/Cell';
+import {getRandomCoordinates, isControlKeys, hasDuplicates} from '@/utils';
+import {SPEED, BOARD_SIZE, DIRECTION, KEYBOARD_DIRECTION} from '@/constants';
 
 import './App.scss';
 
-const SPEED = 100;
-
-const DIRECTION = {
-  UP: -20,
-  RIGHT: 1,
-  DOWN: 20,
-  LEFT: -1,
-} as const;
-
-const KEYBOARD_DIRECTION = {
-  w: DIRECTION.UP,
-  d: DIRECTION.RIGHT,
-  s: DIRECTION.DOWN,
-  a: DIRECTION.LEFT,
-} as const;
-
-export type SnakeBodyPart = {
-  coords: number;
-  direction: number;
-};
-
-type ControlKeys = keyof typeof KEYBOARD_DIRECTION;
-
-const isControlKeys = (value: string): value is ControlKeys =>
-  value === 'w' || value === 'a' || value === 's' || value === 'd';
-
-const getRandomCoordinates = (): number => Math.floor(Math.random() * 400);
-
-const hasDuplicates = (array: (string | number)[]): boolean =>
-  array.some((item, index) => {
-    return array.indexOf(item) !== index;
-  });
-
-const boardCells: null[] = new Array(400).fill(null);
+const boardCells: null[] = new Array(BOARD_SIZE).fill(null);
+const initialCoords: number = 150;
 const initialSnakeCoords: SnakeBodyPart[] = [
   {
-    coords: 150,
+    coords: initialCoords,
     direction: DIRECTION.RIGHT,
   },
 ];
@@ -59,6 +30,15 @@ export const App = () => {
       if (isControlKeys(key)) {
         setSnakeMove(key);
         setMoveElementCoords((current) => {
+          const currMoves = [...current];
+          const coords = current.map((item) => item.coords);
+          const index = coords.indexOf(snakeCoords[0].coords);
+
+          if (index >= 0) {
+            currMoves[index];
+            return currMoves;
+          }
+
           return [...current, {coords: snakeCoords[0].coords, direction: KEYBOARD_DIRECTION[key]}];
         });
       }
@@ -79,22 +59,20 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    setMoveElementCoords((current) => [
-      ...current.reduce<SnakeBodyPart[]>((acc, curr) => {
-        if (snakeCoords.find((item) => item.coords === curr.coords)) {
-          return [...acc, curr];
-        } else {
-          return acc;
-        }
-      }, []),
-    ]);
-  }, [snakeCoords]);
-
-  useEffect(() => {
     let moveSnakeHandler: NodeJS.Timeout | undefined;
     clearTimeout(moveSnakeHandler);
 
     if (snakeMove !== null) {
+      setMoveElementCoords((current) => [
+        ...current.reduce<SnakeBodyPart[]>((acc, curr) => {
+          if (snakeCoords.find((item) => item.coords === curr.coords)) {
+            return [...acc, curr];
+          } else {
+            return acc;
+          }
+        }, []),
+      ]);
+
       if (hasDuplicates(snakeCoords.map((item) => item.coords))) {
         console.log('Game Is Over');
 
