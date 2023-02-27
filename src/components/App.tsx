@@ -1,5 +1,5 @@
 import React, {KeyboardEvent, useCallback, useEffect, useState} from 'react';
-import {SnakeBodyPart} from '@/types';
+import {ControlKeys, SnakeBodyPart} from '@/types';
 import {Cell} from '@/components/Cell';
 import {getRandomCoordinates, isControlKeys, hasDuplicates} from '@/utils';
 import {SPEED, BOARD_SIZE, DIRECTION, KEYBOARD_DIRECTION} from '@/constants';
@@ -18,7 +18,7 @@ const initialSnakeCoords: SnakeBodyPart[] = [
 export const App = () => {
   const [snakeCoords, setSnakeCoords] = useState<SnakeBodyPart[]>(initialSnakeCoords);
   const [appleCoords, setAppleCoords] = useState<number>(getRandomCoordinates());
-  const [snakeMove, setSnakeMove] = useState<string | null>(null);
+  const [snakeMove, setSnakeMove] = useState<ControlKeys | null>(null);
   const [moveElementCoords, setMoveElementCoords] = useState<SnakeBodyPart[]>([]);
   const [newSnakeBodyPart, setNewSnakeBodyPart] = useState<number | null>(null);
 
