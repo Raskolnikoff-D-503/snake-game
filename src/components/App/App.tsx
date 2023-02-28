@@ -118,10 +118,11 @@ export const App = () => {
 
   return (
     <div className={'app'}>
+      <div className={'score-container'}>YOUR CURRENT SCORE: {snakeCoords.length}</div>
       <Board onKeyPressed={onKeyPressed} snakeCoords={snakeCoords} appleCoords={appleCoords} />
       <div className={'button-group'}>
-        <button onClick={onStopClick}>Stop</button>
-        <button onClick={onResetClick}>Reset</button>
+        <button onClick={onStopClick}>STOP</button>
+        <button onClick={onResetClick}>RESET</button>
       </div>
     </div>
   );

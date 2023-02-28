@@ -1,9 +1,14 @@
 .app {
+  padding: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 32px;
+}
+
+.score-container {
+  font-size: 32px;
 }
 
 .button-group {

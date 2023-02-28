@@ -17,6 +17,7 @@ const getFileLoaderOptions = () => ({
 });
 
 module.exports = {
+  mode: 'development',
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -70,6 +71,10 @@ module.exports = {
           loader: 'file-loader',
           options: getFileLoaderOptions(),
         },
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
       },
       {
         test: /\.mp4$/,
