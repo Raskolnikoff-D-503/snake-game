@@ -1,5 +1,9 @@
 export const SPEED = 100;
-export const BOARD_SIZE = 400;
+export const BOARD_SIZE = {
+  SMALL: 300,
+  MEDIUM: 400,
+  LARGE: 500,
+} as const;
 
 export const DIRECTION = {
   UP: -20,

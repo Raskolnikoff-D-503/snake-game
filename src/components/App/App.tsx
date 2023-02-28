@@ -1,12 +1,11 @@
 import React, {KeyboardEvent, useCallback, useEffect, useState} from 'react';
 import {ControlKeys, SnakeBodyPart} from '@/types';
-import {Cell} from '@/components/Cell';
+import {Board} from '@/components';
 import {getRandomCoordinates, isControlKeys, hasDuplicates} from '@/utils';
-import {SPEED, BOARD_SIZE, DIRECTION, KEYBOARD_DIRECTION} from '@/constants';
+import {SPEED, DIRECTION, KEYBOARD_DIRECTION} from '@/constants';
 
 import './App.scss';
 
-const boardCells: null[] = new Array(BOARD_SIZE).fill(null);
 const initialCoords: number = 150;
 const initialSnakeCoords: SnakeBodyPart[] = [
   {
@@ -27,7 +26,7 @@ export const App = () => {
       event.preventDefault();
 
       const key = event.key;
-      if (isControlKeys(key)) {
+      if (isControlKeys(key) && key !== snakeMove) {
         setSnakeMove(key);
         setMoveElementCoords((current) => {
           const currMoves = [...current];
@@ -119,19 +118,7 @@ export const App = () => {
 
   return (
     <div className={'app'}>
-      <div className={'board'} tabIndex={0} onKeyDown={onKeyPressed}>
-        {boardCells.map((_, index) => {
-          return (
-            <Cell
-              key={index}
-              className={'cell'}
-              cellCoords={index}
-              appleCoords={appleCoords}
-              snakeCoords={snakeCoords}
-            ></Cell>
-          );
-        })}
-      </div>
+      <Board onKeyPressed={onKeyPressed} snakeCoords={snakeCoords} appleCoords={appleCoords} />
       <div className={'button-group'}>
         <button onClick={onStopClick}>Stop</button>
         <button onClick={onResetClick}>Reset</button>
