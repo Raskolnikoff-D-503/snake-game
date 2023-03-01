@@ -106,7 +106,7 @@ export const App = () => {
       }
 
       if (snakeCoords?.find((coords) => coords.coords === appleCoords)) {
-        setNewSnakeBodyPart(appleCoords);
+        setNewSnakeBodyPart(snakeCoords[snakeCoords.length - 1].coords);
         setAppleCoords(getRandomCoordinates());
       }
     }
