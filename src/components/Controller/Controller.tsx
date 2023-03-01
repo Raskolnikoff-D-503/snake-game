@@ -1,0 +1,114 @@
+import React, {KeyboardEvent, ReactNode, useState, useCallback, useEffect} from 'react';
+import {SnakeBodyPart, ControlKeys} from '@/types';
+import {ControllerContext} from './ControllerContext';
+import {getRandomCoordinates, isControlKeys, hasDuplicates} from '@/utils';
+import {DIRECTION, KEYBOARD_DIRECTION, SPEED} from '@/constants';
+
+type Props = {
+  children: ReactNode;
+};
+
+const initialCoords: number = 150;
+const initialSnakeCoords: SnakeBodyPart[] = [
+  {
+    coords: initialCoords,
+    direction: DIRECTION.RIGHT,
+  },
+];
+
+export const Controller = ({children}: Props) => {
+  const [snakeCoords, setSnakeCoords] = useState<SnakeBodyPart[]>(initialSnakeCoords);
+  const [appleCoords, setAppleCoords] = useState<number>(getRandomCoordinates());
+  const [snakeMove, setSnakeMove] = useState<ControlKeys | null>(null);
+  const [newSnakeBodyPart, setNewSnakeBodyPart] = useState<number | null>(null);
+
+  const onKeyPressed = useCallback(
+    (event: KeyboardEvent) => {
+      event.preventDefault();
+
+      const key = event.key;
+      if (isControlKeys(key) && key !== snakeMove) {
+        setSnakeMove(key);
+      }
+    },
+    [snakeCoords],
+  );
+
+  const onPause = useCallback(() => {
+    setSnakeMove(null);
+  }, []);
+
+  const onStartOver = useCallback(() => {
+    setSnakeMove(null);
+    setSnakeCoords(initialSnakeCoords);
+    setAppleCoords(getRandomCoordinates());
+    setNewSnakeBodyPart(null);
+  }, []);
+
+  useEffect(() => {
+    let moveSnakeHandler: NodeJS.Timeout | undefined;
+    clearTimeout(moveSnakeHandler);
+
+    if (snakeMove !== null) {
+      if (hasDuplicates(snakeCoords.map((item) => item.coords))) {
+        console.log('Game Is Over');
+
+        setSnakeMove(null);
+      }
+
+      moveSnakeHandler = setTimeout(() => {
+        setSnakeCoords((current) => {
+          return current.map((item, index, array) => {
+            if (index === 0) {
+              const direction = KEYBOARD_DIRECTION[snakeMove];
+              return {
+                coords: item.coords + direction,
+                direction,
+              };
+            } else {
+              const direction = array[index - 1].direction;
+              return {coords: item.coords + direction, direction};
+            }
+          });
+        });
+      }, SPEED);
+      const lastElement = snakeCoords.at(-1);
+
+      if (
+        newSnakeBodyPart !== null &&
+        lastElement &&
+        !snakeCoords.find((item) => item.coords === newSnakeBodyPart)
+      ) {
+        setSnakeCoords((current) => [
+          ...current,
+          {coords: newSnakeBodyPart, direction: lastElement.direction},
+        ]);
+        setNewSnakeBodyPart(null);
+      }
+
+      if (snakeCoords?.find((coords) => coords.coords === appleCoords)) {
+        setNewSnakeBodyPart(snakeCoords[snakeCoords.length - 1].coords);
+        setAppleCoords(getRandomCoordinates());
+      }
+    }
+
+    return () => {
+      clearTimeout(moveSnakeHandler);
+    };
+  }, [snakeMove, snakeCoords]);
+
+  return (
+    <ControllerContext.Provider
+      value={{
+        onKeyPressed,
+        onPause,
+        onStartOver,
+        points: snakeCoords.length,
+        snakeCoords,
+        appleCoords,
+      }}
+    >
+      {children}
+    </ControllerContext.Provider>
+  );
+};

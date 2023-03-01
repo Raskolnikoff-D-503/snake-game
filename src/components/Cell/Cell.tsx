@@ -1,17 +1,19 @@
-import React from 'react';
-import {SnakeBodyPart} from '@/types';
+import React, {useContext} from 'react';
+import {ControllerContext} from '@/components';
 
 import './Cell.scss';
 
 type Props = {
   cellCoords: number;
-  appleCoords: number;
-  snakeCoords: SnakeBodyPart[];
 };
 
-export const Cell = ({cellCoords, appleCoords, snakeCoords}: Props) => {
-  const isAppleOnCurrentCell = cellCoords === appleCoords;
-  const isSnakeOnCurrentCell = snakeCoords?.find((coords) => coords.coords === cellCoords);
+export const Cell = ({cellCoords}: Props) => {
+  const controllerContext = useContext(ControllerContext);
+
+  const isAppleOnCurrentCell = cellCoords === controllerContext?.appleCoords;
+  const isSnakeOnCurrentCell = controllerContext?.snakeCoords?.find(
+    (coords) => coords.coords === cellCoords,
+  );
 
   return (
     <div
