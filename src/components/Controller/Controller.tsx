@@ -8,6 +8,12 @@ type Props = {
   children: ReactNode;
 };
 
+// cases:
+// 1. 0-19 & UP: +370 or GAME_OVER
+// 2. 20-380 & LEFT: +19 or GAME_OVER
+// 3. 380-399 & DOWN: -370 or GAME_OVER
+// 4. 19-399 & RIGHT: -19 or GAME_OVER
+
 const initialCoords: number = 150;
 const initialSnakeCoords: SnakeBodyPart[] = [
   {
@@ -45,6 +51,34 @@ export const Controller = ({children}: Props) => {
     setNewSnakeBodyPart(null);
   }, []);
 
+  const changingSnakeLocation = (keyboard: ControlKeys) =>
+    setTimeout(() => {
+      setSnakeCoords((current) => {
+        return current.map((item, index, array) => {
+          if (index === 0) {
+            const direction = KEYBOARD_DIRECTION[keyboard];
+
+            // switch (true) {
+            //   case item.coords <= 19 && item.direction === KEYBOARD_DIRECTION[KEYBOARD.UP]:
+            //     direction = 380;
+            //     break;
+            //   case item.coords >= 380 && item.direction === KEYBOARD_DIRECTION[KEYBOARD.DOWN]:
+            //     direction = -380;
+            //     break;
+            // }
+
+            return {
+              coords: item.coords + direction,
+              direction,
+            };
+          } else {
+            const direction = array[index - 1].direction;
+            return {coords: item.coords + direction, direction};
+          }
+        });
+      });
+    }, SPEED);
+
   useEffect(() => {
     let moveSnakeHandler: NodeJS.Timeout | undefined;
     clearTimeout(moveSnakeHandler);
@@ -56,24 +90,18 @@ export const Controller = ({children}: Props) => {
         setSnakeMove(null);
       }
 
-      moveSnakeHandler = setTimeout(() => {
-        setSnakeCoords((current) => {
-          return current.map((item, index, array) => {
-            if (index === 0) {
-              const direction = KEYBOARD_DIRECTION[snakeMove];
-              return {
-                coords: item.coords + direction,
-                direction,
-              };
-            } else {
-              const direction = array[index - 1].direction;
-              return {coords: item.coords + direction, direction};
-            }
-          });
-        });
-      }, SPEED);
-      const lastElement = snakeCoords.at(-1);
+      moveSnakeHandler = changingSnakeLocation(snakeMove);
 
+      // if (
+      //   snakeCoords[0].coords === 0 &&
+      //   snakeCoords[0].direction === KEYBOARD_DIRECTION[KEYBOARD.UP]
+      // ) {
+      //   console.log('Game Is Over');
+
+      //   setSnakeMove(null);
+      // }
+
+      const lastElement = snakeCoords.at(-1);
       if (
         newSnakeBodyPart !== null &&
         lastElement &&

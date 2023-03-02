@@ -20,6 +20,8 @@ export const Cell = ({cellCoords}: Props) => {
       className={`cell ${isAppleOnCurrentCell ? 'apple-placement' : ''} ${
         isSnakeOnCurrentCell ? 'snake-placement' : ''
       }`}
-    />
+    >
+      {cellCoords}
+    </div>
   );
 };
