@@ -1,14 +1,21 @@
 .cell {
   width: 25px;
   height: 25px;
-  box-shadow: 0 0 0 1px black;
   font-family: 'sans-serif';
+
+  &--dark-background {
+    background-color: #96cc99;
+  }
+
+  &--light-background {
+    background-color: #aacc99;
+  }
 }
 
 .apple-placement {
-  background-color: red;
+  background-color: #cb6d68;
 }
 
 .snake-placement {
-  background-color: darkolivegreen;
+  background-color: #282828;
 }

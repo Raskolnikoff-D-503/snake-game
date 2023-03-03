@@ -10,12 +10,15 @@ type Props = {
 export const Cell = ({cellCoords}: Props) => {
   const controllerContext = useContext(ControllerContext);
 
+  const isEvenNumber = cellCoords % 2 === 0;
   const isAppleOnCurrentCell = cellCoords === controllerContext?.appleCoords;
   const isSnakeOnCurrentCell = controllerContext?.snakeCoords?.find(
     (coords) => coords.coords === cellCoords,
   );
 
-  const conditionalClassNames = `${isAppleOnCurrentCell ? 'apple-placement' : ''} ${
+  const conditionalClassNames = `${
+    isEvenNumber ? 'cell--dark-background' : 'cell--light-background'
+  } ${isAppleOnCurrentCell ? 'apple-placement' : ''} ${
     isSnakeOnCurrentCell ? 'snake-placement' : ''
   }`;
 
