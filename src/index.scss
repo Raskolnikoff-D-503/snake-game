@@ -9,7 +9,14 @@
   padding: 0;
   border: 0;
   font-size: 100%;
+  box-sizing: border-box;
+  background-color: #aacc99;
+  outline: none;
   font: inherit;
   vertical-align: baseline;
   font-family: 'PressStart2P-Regular', 'sans-serif';
+}
+
+h1 {
+  font-size: 48px;
 }

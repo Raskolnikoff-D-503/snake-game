@@ -4,7 +4,7 @@ import {BOARD_SIZE} from '@/constants';
 
 import './Board.scss';
 
-const boardCells: null[] = new Array(BOARD_SIZE.MEDIUM).fill(null);
+const boardCells: null[] = new Array(BOARD_SIZE).fill(null);
 
 export const Board = () => {
   const controllerContext = useContext(ControllerContext);

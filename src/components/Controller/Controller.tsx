@@ -14,7 +14,7 @@ type Props = {
 // 3. 380-399 & DOWN: -370 or GAME_OVER
 // 4. 19-399 & RIGHT: -19 or GAME_OVER
 
-const initialCoords: number = 150;
+const initialCoords: number = 312;
 const initialSnakeCoords: SnakeBodyPart[] = [
   {
     coords: initialCoords,

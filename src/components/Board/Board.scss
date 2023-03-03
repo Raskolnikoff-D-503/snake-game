@@ -1,6 +1,6 @@
 .board {
   display: grid;
   box-sizing: border-box;
-  grid-template-columns: repeat(20, 1fr);
-  grid-gap: 1px;
+  border: 5px solid #282828;
+  grid-template-columns: repeat(25, 1fr);
 }
