@@ -27,6 +27,7 @@ export const Controller = ({children}: Props) => {
   const [appleCoords, setAppleCoords] = useState<number>(getRandomCoordinates());
   const [snakeMove, setSnakeMove] = useState<ControlKeys | null>(null);
   const [newSnakeBodyPart, setNewSnakeBodyPart] = useState<number | null>(null);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
 
   const onKeyPressed = useCallback(
     (event: KeyboardEvent) => {
@@ -45,18 +46,19 @@ export const Controller = ({children}: Props) => {
   }, []);
 
   const onStartOver = useCallback(() => {
+    setIsGameOver(false);
     setSnakeMove(null);
     setSnakeCoords(initialSnakeCoords);
     setAppleCoords(getRandomCoordinates());
     setNewSnakeBodyPart(null);
   }, []);
 
-  const changingSnakeLocation = (keyboard: ControlKeys) =>
-    setTimeout(() => {
+  const moveSnakeTimeout = (key: ControlKeys) =>
+    setInterval(() => {
       setSnakeCoords((current) => {
         return current.map((item, index, array) => {
           if (index === 0) {
-            const direction = KEYBOARD_DIRECTION[keyboard];
+            const direction = KEYBOARD_DIRECTION[key];
 
             // switch (true) {
             //   case item.coords <= 19 && item.direction === KEYBOARD_DIRECTION[KEYBOARD.UP]:
@@ -77,20 +79,25 @@ export const Controller = ({children}: Props) => {
           }
         });
       });
-    }, SPEED);
 
-  useEffect(() => {
-    let moveSnakeHandler: NodeJS.Timeout | undefined;
-    clearTimeout(moveSnakeHandler);
-
-    if (snakeMove !== null) {
-      if (hasDuplicates(snakeCoords.map((item) => item.coords))) {
+      if (snakeCoords[0].coords === 0 && snakeCoords[0].direction === KEYBOARD_DIRECTION[key]) {
         console.log('Game Is Over');
 
         setSnakeMove(null);
       }
+    }, SPEED);
 
-      moveSnakeHandler = changingSnakeLocation(snakeMove);
+  useEffect(() => {
+    let moveSnakeHandler: NodeJS.Timeout | undefined;
+
+    if (snakeMove !== null && !isGameOver) {
+      if (hasDuplicates(snakeCoords.map((item) => item.coords))) {
+        console.log('Game Is Over');
+        setIsGameOver(true);
+        setSnakeMove(null);
+      }
+
+      moveSnakeHandler = moveSnakeTimeout(snakeMove);
 
       // if (
       //   snakeCoords[0].coords === 0 &&

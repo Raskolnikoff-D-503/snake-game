@@ -1,6 +1,6 @@
-import {KEYBOARD_DIRECTION} from '@/constants';
+import {CONTROL_KEYS} from '@/constants';
 
-export type ControlKeys = keyof typeof KEYBOARD_DIRECTION;
+export type ControlKeys = typeof CONTROL_KEYS[keyof typeof CONTROL_KEYS];
 
 export type SnakeBodyPart = {
   coords: number;
