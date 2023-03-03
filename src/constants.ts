@@ -7,7 +7,7 @@ export const DIRECTION = {
   LEFT: -1,
 } as const;
 
-export const KEYBOARD = {
+export const CONTROL_KEYS = {
   UP: 'w',
   RIGHT: 'd',
   DOWN: 's',
@@ -15,10 +15,10 @@ export const KEYBOARD = {
 } as const;
 
 export const KEYBOARD_DIRECTION = {
-  [KEYBOARD.UP]: DIRECTION.UP,
-  [KEYBOARD.RIGHT]: DIRECTION.RIGHT,
-  [KEYBOARD.DOWN]: DIRECTION.DOWN,
-  [KEYBOARD.LEFT]: DIRECTION.LEFT,
+  [CONTROL_KEYS.UP]: DIRECTION.UP,
+  [CONTROL_KEYS.RIGHT]: DIRECTION.RIGHT,
+  [CONTROL_KEYS.DOWN]: DIRECTION.DOWN,
+  [CONTROL_KEYS.LEFT]: DIRECTION.LEFT,
 } as const;
 
 //TODO: make the feature on user board size configuration

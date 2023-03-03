@@ -15,13 +15,9 @@ export const Cell = ({cellCoords}: Props) => {
     (coords) => coords.coords === cellCoords,
   );
 
-  return (
-    <div
-      className={`cell ${isAppleOnCurrentCell ? 'apple-placement' : ''} ${
-        isSnakeOnCurrentCell ? 'snake-placement' : ''
-      }`}
-    >
-      {cellCoords}
-    </div>
-  );
+  const conditionalClassNames = `${isAppleOnCurrentCell ? 'apple-placement' : ''} ${
+    isSnakeOnCurrentCell ? 'snake-placement' : ''
+  }`;
+
+  return <div className={`cell ${conditionalClassNames}`} />;
 };
