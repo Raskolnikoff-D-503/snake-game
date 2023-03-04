@@ -12,7 +12,7 @@ export const Cell = ({cellCoords}: Props) => {
 
   const isEvenNumber = cellCoords % 2 === 0;
   const isAppleOnCurrentCell = cellCoords === controllerContext?.appleCoords;
-  const isSnakeOnCurrentCell = controllerContext?.snakeCoords?.find(
+  const isSnakeOnCurrentCell = controllerContext?.snakeBody?.find(
     (coords) => coords.coords === cellCoords,
   );
 
