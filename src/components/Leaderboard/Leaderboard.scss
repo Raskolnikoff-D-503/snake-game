@@ -1,0 +1,19 @@
+.leaderboard {
+  &__container {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border: 5px solid #282828;
+    align-items: center;
+    gap: 48px;
+  }
+
+  &__list {
+    font-size: 12px;
+  }
+
+  &__item {
+    padding: 12px;
+  }
+}

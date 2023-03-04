@@ -1,5 +1,6 @@
 export const SPEED = 100;
 export const BOARD_SIZE = 625;
+export const MAX_NUMBER_OF_LEADERS = 12;
 
 export const DIRECTION_NUMERIC = {
   UP: -25,

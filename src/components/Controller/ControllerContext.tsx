@@ -1,8 +1,9 @@
 import {createContext, KeyboardEvent} from 'react';
-import {SnakeBodyPart} from '@/types';
+import {LeaderboardDataViewType, SnakeBodyPart} from '@/types';
 
 type ControllerContext = {
   points: number;
+  leaderboardData: LeaderboardDataViewType[];
   snakeBody: SnakeBodyPart[];
   appleCoords: number;
   onKeyPressed: (event: KeyboardEvent) => void;
