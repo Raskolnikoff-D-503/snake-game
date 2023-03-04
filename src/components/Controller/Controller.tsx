@@ -1,7 +1,7 @@
 import React, {KeyboardEvent, ReactNode, useState, useCallback, useEffect} from 'react';
 import {SnakeBodyPart, ControlKeys} from '@/types';
 import {ControllerContext} from './ControllerContext';
-import {getRandomCoordinates, isControlKeys} from '@/utils';
+import {getLeaderboardViewData, getRandomCoordinates, isControlKeys} from '@/utils';
 import {CONTROL_KEYS, DIRECTION_NUMERIC, KEYBOARD_DIRECTION, SPEED} from '@/constants';
 
 type Props = {
@@ -17,6 +17,8 @@ const initialSnakeCoords: SnakeBodyPart[] = [
 ];
 
 export const Controller = ({children}: Props) => {
+  const scoreHistory = localStorage;
+
   const [snakeBody, setSnakeBody] = useState<SnakeBodyPart[]>(initialSnakeCoords);
   const [appleCoords, setAppleCoords] = useState<number>(getRandomCoordinates());
   const [snakeMove, setSnakeMove] = useState<ControlKeys | null>(null);
@@ -119,10 +121,33 @@ export const Controller = ({children}: Props) => {
     };
   }, [snakeMove, snakeBody, isGameOver]);
 
+  useEffect(() => {
+    if (isGameOver) {
+      const scores: number[] = Object.keys(scoreHistory).map((item) => Number(item));
+
+      // const scores = Object.keys(scoreHistory).map((item) => {
+      //   const score = item.split('_');
+      //   return {number: Number(score[0]), index: Number(score[1])};
+      // });
+
+      // const currentScore = scores.some((item) => item.number === snakeBody.length) ? scores : `${snakeBody.length.toString()}_${'1'}`
+
+      if (scores.length < 12) {
+        localStorage.setItem(snakeBody.length.toString(), 'ZHENYA');
+      }
+
+      if (scores.length >= 12 && scores.some((score) => score < snakeBody.length)) {
+        localStorage.removeItem(Math.min(...scores).toString());
+        localStorage.setItem(snakeBody.length.toString(), 'ZHENYA');
+      }
+    }
+  }, [isGameOver]);
+
   return (
     <ControllerContext.Provider
       value={{
         points: snakeBody.length,
+        leaderboardData: getLeaderboardViewData(scoreHistory),
         snakeBody,
         appleCoords,
         onKeyPressed,

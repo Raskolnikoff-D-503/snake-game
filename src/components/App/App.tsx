@@ -1,5 +1,5 @@
 import React from 'react';
-import {Board, ButtonGroup, Controller, Header} from '@/components';
+import {Board, ButtonGroup, Controller, Header, Leaderboard} from '@/components';
 
 import './App.scss';
 
@@ -7,9 +7,12 @@ export const App = () => {
   return (
     <div className={'app'}>
       <Controller>
-        <h1>SNAKE GAME</h1>
         <Header />
-        <Board />
+        <div className={'app__container'}>
+          <div>Additional Information</div>
+          <Board />
+          <Leaderboard />
+        </div>
         <ButtonGroup />
       </Controller>
     </div>

@@ -6,3 +6,13 @@ export type SnakeBodyPart = {
   coords: number;
   direction: number;
 };
+
+export type LeaderboardDataType = {
+  name: string;
+  score: number;
+};
+
+export type LeaderboardDataViewType = {
+  serialNumber: string;
+  info: string;
+};
