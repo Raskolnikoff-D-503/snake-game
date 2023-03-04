@@ -3,7 +3,7 @@ import {SnakeBodyPart} from '@/types';
 
 type ControllerContext = {
   points: number;
-  snakeCoords: SnakeBodyPart[];
+  snakeBody: SnakeBodyPart[];
   appleCoords: number;
   onKeyPressed: (event: KeyboardEvent) => void;
   onPause: () => void;

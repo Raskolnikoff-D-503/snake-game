@@ -6,8 +6,8 @@ import './App.scss';
 export const App = () => {
   return (
     <div className={'app'}>
-      <h1>SNAKE GAME</h1>
       <Controller>
+        <h1>SNAKE GAME</h1>
         <Header />
         <Board />
         <ButtonGroup />
