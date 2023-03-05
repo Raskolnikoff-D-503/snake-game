@@ -1,6 +1,7 @@
-import {CONTROL_KEYS} from '@/constants';
+import {CONTROL_KEYS, STATUS} from '@/constants';
 
 export type ControlKeys = typeof CONTROL_KEYS[keyof typeof CONTROL_KEYS];
+export type StatusType = typeof STATUS[keyof typeof STATUS];
 
 export type SnakeBodyPart = {
   coords: number;

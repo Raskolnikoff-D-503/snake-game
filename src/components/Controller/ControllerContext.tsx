@@ -1,7 +1,8 @@
 import {createContext, KeyboardEvent} from 'react';
-import {LeaderboardDataViewType, SnakeBodyPart} from '@/types';
+import {LeaderboardDataViewType, SnakeBodyPart, StatusType} from '@/types';
 
 type ControllerContext = {
+  status: StatusType;
   points: number;
   leaderboardData: LeaderboardDataViewType[];
   snakeBody: SnakeBodyPart[];
