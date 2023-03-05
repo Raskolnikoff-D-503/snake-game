@@ -1,0 +1,21 @@
+.info-board {
+  &__container {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border: 5px solid #282828;
+    align-items: center;
+  }
+
+  &__content {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 48px;
+    padding: 32px;
+  }
+}

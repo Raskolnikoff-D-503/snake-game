@@ -1,5 +1,5 @@
 import React from 'react';
-import {Board, ButtonGroup, Controller, Header, Leaderboard} from '@/components';
+import {Board, ButtonGroup, Controller, Header, InfoBoard, Leaderboard} from '@/components';
 
 import './App.scss';
 
@@ -9,7 +9,7 @@ export const App = () => {
       <Controller>
         <Header />
         <div className={'app__container'}>
-          <div>Additional Information</div>
+          <InfoBoard />
           <Board />
           <Leaderboard />
         </div>

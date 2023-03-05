@@ -1,5 +1,5 @@
 import React, {KeyboardEvent, ReactNode, useState, useCallback, useEffect} from 'react';
-import {SnakeBodyPart, ControlKeys, ScoreInfoType} from '@/types';
+import {SnakeBodyPart, ControlKeys, ScoreInfoType, StatusType} from '@/types';
 import {ControllerContext} from './ControllerContext';
 import {
   getCurrentScoreInfo,
@@ -10,7 +10,7 @@ import {
   isControlKeys,
   transformToStorageData,
 } from '@/utils';
-import {CONTROL_KEYS, DIRECTION_NUMERIC, KEYBOARD_DIRECTION, SPEED} from '@/constants';
+import {CONTROL_KEYS, DIRECTION_NUMERIC, KEYBOARD_DIRECTION, SPEED, STATUS} from '@/constants';
 
 type Props = {
   children: ReactNode;
@@ -34,6 +34,7 @@ getCurrentScoreInfo(3, [
 export const Controller = ({children}: Props) => {
   const scoreHistory = localStorage;
 
+  const [status, setStatus] = useState<StatusType>(STATUS.START);
   const [currentScore, setCurrentScore] = useState<number>(initialScore);
   const [snakeBody, setSnakeBody] = useState<SnakeBodyPart[]>(initialSnakeCoords);
   const [appleCoords, setAppleCoords] = useState<number>(getRandomCoordinates());
@@ -55,17 +56,23 @@ export const Controller = ({children}: Props) => {
   );
 
   const onPause = useCallback(() => {
-    setSnakeMove(null);
-  }, []);
+    if (status !== STATUS.START && status !== STATUS.ON_PAUSE) {
+      setSnakeMove(null);
+      setStatus(STATUS.ON_PAUSE);
+    }
+  }, [status]);
 
   const onStartOver = useCallback(() => {
-    setIsGameOver(false);
-    setSnakeMove(null);
-    setCurrentScore(initialScore);
-    setSnakeBody(initialSnakeCoords);
-    setAppleCoords(getRandomCoordinates());
-    setNewSnakeBodyPart(null);
-  }, []);
+    if (status !== STATUS.START) {
+      setStatus(STATUS.START);
+      setIsGameOver(false);
+      setSnakeMove(null);
+      setCurrentScore(initialScore);
+      setSnakeBody(initialSnakeCoords);
+      setAppleCoords(getRandomCoordinates());
+      setNewSnakeBodyPart(null);
+    }
+  }, [status]);
 
   const moveSnakeTimeout = (key: ControlKeys, ms: number) =>
     setInterval(() => {
@@ -108,6 +115,10 @@ export const Controller = ({children}: Props) => {
     if (snakeMove !== null && !isGameOver) {
       moveSnakeHandler = moveSnakeTimeout(snakeMove, SPEED);
 
+      if (status !== STATUS.GAME_IS_ON) {
+        setStatus(STATUS.GAME_IS_ON);
+      }
+
       const lastElement = snakeBody.at(-1);
 
       if (
@@ -137,6 +148,7 @@ export const Controller = ({children}: Props) => {
   useEffect(() => {
     if (isGameOver) {
       console.log('Game Is Over');
+      setStatus(STATUS.GAME_OVER);
       setSnakeMove(null);
 
       const scores: ScoreInfoType[] = Object.keys(scoreHistory).map((item) => getScoreInfo(item));
@@ -156,6 +168,7 @@ export const Controller = ({children}: Props) => {
   return (
     <ControllerContext.Provider
       value={{
+        status,
         points: currentScore,
         leaderboardData: getLeaderboardViewData(scoreHistory),
         snakeBody,
