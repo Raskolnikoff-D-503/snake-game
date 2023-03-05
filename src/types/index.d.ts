@@ -7,9 +7,14 @@ export type SnakeBodyPart = {
   direction: number;
 };
 
+export type ScoreInfoType = {
+  number: number;
+  subIndex: number;
+};
+
 export type LeaderboardDataType = {
   name: string;
-  score: number;
+  score: ScoreInfoType;
 };
 
 export type LeaderboardDataViewType = {

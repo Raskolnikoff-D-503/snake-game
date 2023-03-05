@@ -2,3 +2,10 @@
   display: flex;
   gap: 32px;
 }
+
+.button {
+  cursor: pointer;
+  width: 200px;
+  border: 5px solid #282828;
+  padding: 8px;
+}

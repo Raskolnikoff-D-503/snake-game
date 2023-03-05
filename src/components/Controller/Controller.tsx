@@ -1,13 +1,22 @@
 import React, {KeyboardEvent, ReactNode, useState, useCallback, useEffect} from 'react';
-import {SnakeBodyPart, ControlKeys} from '@/types';
+import {SnakeBodyPart, ControlKeys, ScoreInfoType} from '@/types';
 import {ControllerContext} from './ControllerContext';
-import {getLeaderboardViewData, getRandomCoordinates, isControlKeys} from '@/utils';
+import {
+  getCurrentScoreInfo,
+  getLeaderboardViewData,
+  getMinStorageData,
+  getRandomCoordinates,
+  getScoreInfo,
+  isControlKeys,
+  transformToStorageData,
+} from '@/utils';
 import {CONTROL_KEYS, DIRECTION_NUMERIC, KEYBOARD_DIRECTION, SPEED} from '@/constants';
 
 type Props = {
   children: ReactNode;
 };
 
+const initialScore: number = 1;
 const initialCoords: number = 312;
 const initialSnakeCoords: SnakeBodyPart[] = [
   {
@@ -16,9 +25,16 @@ const initialSnakeCoords: SnakeBodyPart[] = [
   },
 ];
 
+getCurrentScoreInfo(3, [
+  {number: 3, subIndex: 1},
+  {number: 3, subIndex: 2},
+  {number: 3, subIndex: 3},
+]);
+
 export const Controller = ({children}: Props) => {
   const scoreHistory = localStorage;
 
+  const [currentScore, setCurrentScore] = useState<number>(initialScore);
   const [snakeBody, setSnakeBody] = useState<SnakeBodyPart[]>(initialSnakeCoords);
   const [appleCoords, setAppleCoords] = useState<number>(getRandomCoordinates());
   const [snakeMove, setSnakeMove] = useState<ControlKeys | null>(null);
@@ -45,6 +61,7 @@ export const Controller = ({children}: Props) => {
   const onStartOver = useCallback(() => {
     setIsGameOver(false);
     setSnakeMove(null);
+    setCurrentScore(initialScore);
     setSnakeBody(initialSnakeCoords);
     setAppleCoords(getRandomCoordinates());
     setNewSnakeBodyPart(null);
@@ -86,11 +103,6 @@ export const Controller = ({children}: Props) => {
     }, ms);
 
   useEffect(() => {
-    if (isGameOver) {
-      console.log('Game Is Over');
-      setSnakeMove(null);
-    }
-
     let moveSnakeHandler: NodeJS.Timeout | undefined;
 
     if (snakeMove !== null && !isGameOver) {
@@ -111,6 +123,7 @@ export const Controller = ({children}: Props) => {
       }
 
       if (snakeBody?.find((coords) => coords.coords === appleCoords)) {
+        setCurrentScore((current) => ++current);
         setNewSnakeBodyPart(snakeBody[snakeBody.length - 1].coords);
         setAppleCoords(getRandomCoordinates());
       }
@@ -123,22 +136,19 @@ export const Controller = ({children}: Props) => {
 
   useEffect(() => {
     if (isGameOver) {
-      const scores: number[] = Object.keys(scoreHistory).map((item) => Number(item));
+      console.log('Game Is Over');
+      setSnakeMove(null);
 
-      // const scores = Object.keys(scoreHistory).map((item) => {
-      //   const score = item.split('_');
-      //   return {number: Number(score[0]), index: Number(score[1])};
-      // });
-
-      // const currentScore = scores.some((item) => item.number === snakeBody.length) ? scores : `${snakeBody.length.toString()}_${'1'}`
+      const scores: ScoreInfoType[] = Object.keys(scoreHistory).map((item) => getScoreInfo(item));
+      const playerScore = getCurrentScoreInfo(currentScore, scores);
 
       if (scores.length < 12) {
-        localStorage.setItem(snakeBody.length.toString(), 'ZHENYA');
+        localStorage.setItem(transformToStorageData(playerScore), 'ZHENYA');
       }
 
-      if (scores.length >= 12 && scores.some((score) => score < snakeBody.length)) {
-        localStorage.removeItem(Math.min(...scores).toString());
-        localStorage.setItem(snakeBody.length.toString(), 'ZHENYA');
+      if (scores.length >= 12 && scores.some((score) => score.number < playerScore.number)) {
+        localStorage.removeItem(getMinStorageData(scores));
+        localStorage.setItem(transformToStorageData(playerScore), 'ZHENYA');
       }
     }
   }, [isGameOver]);
@@ -146,7 +156,7 @@ export const Controller = ({children}: Props) => {
   return (
     <ControllerContext.Provider
       value={{
-        points: snakeBody.length,
+        points: currentScore,
         leaderboardData: getLeaderboardViewData(scoreHistory),
         snakeBody,
         appleCoords,

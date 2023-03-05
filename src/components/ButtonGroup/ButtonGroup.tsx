@@ -8,8 +8,12 @@ export const ButtonGroup = () => {
 
   return (
     <div className={'button-group'}>
-      <button onClick={controllerContext?.onPause}>PAUSE</button>
-      <button onClick={controllerContext?.onStartOver}>START OVER</button>
+      <button className={'button'} onClick={controllerContext?.onPause}>
+        PAUSE
+      </button>
+      <button className={'button'} onClick={controllerContext?.onStartOver}>
+        START OVER
+      </button>
     </div>
   );
 };
