@@ -1,19 +1,29 @@
-import React, {ChangeEvent, useContext, useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useContext, useState, useCallback} from 'react';
 import {Button, ControllerContext} from '@/components';
+import {ADDITIONAL_CONTROL_KEYS, NAME_LENGTH} from '@/constants';
 
 import './NewRecordForm.scss';
+
+const nameRegEx = /^[A-Za-z]+$/;
 
 export const NewRecordForm = () => {
   const controllerContext = useContext(ControllerContext);
 
   const [txt, setTxt] = useState<string>('');
 
-  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const {value} = e.target;
+  const onInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const {value} = event.target;
 
-    const re = /^[A-Za-z]+$/;
-    if (value === '' || re.test(value)) {
+    if (value === '' || nameRegEx.test(value)) {
       setTxt(value.toUpperCase());
+    }
+  }, []);
+
+  const onClick = useCallback(() => controllerContext?.onSaveClick(txt), [txt]);
+
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.code === ADDITIONAL_CONTROL_KEYS.SAVE) {
+      onClick();
     }
   };
 
@@ -24,10 +34,11 @@ export const NewRecordForm = () => {
         value={txt}
         autoFocus
         className="new-record-form__input"
-        maxLength={6}
+        maxLength={NAME_LENGTH}
         onChange={onInputChange}
+        onKeyDown={onKeyDown}
       />
-      <Button text="SAVE" onClick={() => controllerContext?.onSaveClick(txt)} />
+      <Button text="SAVE" onClick={onClick} />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, {KeyboardEvent, ReactNode, useState, useCallback, useEffect} from 'react';
+import React, {ReactNode, useState, useCallback, useEffect} from 'react';
 import {SnakeBodyPart, ControlKeys, ScoreInfoType, StatusType} from '@/types';
 import {ControllerContext} from './ControllerContext';
 import {
@@ -11,10 +11,12 @@ import {
   transformToStorageData,
 } from '@/utils';
 import {
+  ADDITIONAL_CONTROL_KEYS,
   CONTROL_KEYS,
   DIRECTION_NUMERIC,
   KEYBOARD_DIRECTION,
   MAX_NUMBER_OF_LEADERS,
+  NAME_LENGTH,
   SPEED,
   STATUS,
 } from '@/constants';
@@ -44,23 +46,10 @@ export const Controller = ({children}: Props) => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const onKeyPressed = useCallback(
-    (event: KeyboardEvent) => {
-      event.preventDefault();
-
-      const key = event.key;
-
-      if (isControlKeys(key) && key !== snakeMove) {
-        setSnakeMove(key);
-      }
-    },
-    [snakeBody],
-  );
-
   const onPauseClick = useCallback(() => {
-    if (status !== STATUS.START && status !== STATUS.ON_PAUSE) {
+    if (status !== STATUS.START && status !== STATUS.PAUSE) {
       setSnakeMove(null);
-      setStatus(STATUS.ON_PAUSE);
+      setStatus(STATUS.PAUSE);
     }
   }, [status]);
 
@@ -78,11 +67,11 @@ export const Controller = ({children}: Props) => {
 
   const onSaveClick = useCallback(
     (value: string) => {
-      if (value.length !== 6) {
+      if (value.length !== NAME_LENGTH) {
         setStatus(STATUS.ON_SAVE_ERROR);
       }
 
-      if (value.length === 6) {
+      if (value.length === NAME_LENGTH) {
         if (status === STATUS.ON_SAVE_ERROR) {
           setStatus(STATUS.GAME_OVER);
         }
@@ -106,6 +95,30 @@ export const Controller = ({children}: Props) => {
       }
     },
     [scoreHistory, currentScore, status],
+  );
+
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      const key = event.key;
+
+      if (!isModalOpen) {
+        if (isControlKeys(key) && key !== snakeMove) {
+          event.preventDefault();
+          setSnakeMove(key);
+        }
+
+        if (key === ADDITIONAL_CONTROL_KEYS.PAUSE) {
+          event.preventDefault();
+          onPauseClick();
+        }
+
+        if (key === ADDITIONAL_CONTROL_KEYS.START_OVER) {
+          event.preventDefault();
+          onStartOverClick();
+        }
+      }
+    },
+    [snakeMove, isGameOver, isModalOpen],
   );
 
   const moveSnakeTimeout = (key: ControlKeys, ms: number) =>
@@ -198,6 +211,14 @@ export const Controller = ({children}: Props) => {
     }
   }, [isGameOver]);
 
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onKeyDown]);
+
   return (
     <ControllerContext.Provider
       value={{
@@ -207,7 +228,6 @@ export const Controller = ({children}: Props) => {
         snakeBody,
         appleCoords,
         isModalOpen,
-        onKeyPressed,
         onPauseClick,
         onStartOverClick,
         onSaveClick,
