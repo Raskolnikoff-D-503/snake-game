@@ -10,7 +10,14 @@ import {
   isControlKeys,
   transformToStorageData,
 } from '@/utils';
-import {CONTROL_KEYS, DIRECTION_NUMERIC, KEYBOARD_DIRECTION, SPEED, STATUS} from '@/constants';
+import {
+  CONTROL_KEYS,
+  DIRECTION_NUMERIC,
+  KEYBOARD_DIRECTION,
+  MAX_NUMBER_OF_LEADERS,
+  SPEED,
+  STATUS,
+} from '@/constants';
 
 type Props = {
   children: ReactNode;
@@ -25,12 +32,6 @@ const initialSnakeCoords: SnakeBodyPart[] = [
   },
 ];
 
-getCurrentScoreInfo(3, [
-  {number: 3, subIndex: 1},
-  {number: 3, subIndex: 2},
-  {number: 3, subIndex: 3},
-]);
-
 export const Controller = ({children}: Props) => {
   const scoreHistory = localStorage;
 
@@ -41,6 +42,7 @@ export const Controller = ({children}: Props) => {
   const [snakeMove, setSnakeMove] = useState<ControlKeys | null>(null);
   const [newSnakeBodyPart, setNewSnakeBodyPart] = useState<number | null>(null);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const onKeyPressed = useCallback(
     (event: KeyboardEvent) => {
@@ -55,14 +57,14 @@ export const Controller = ({children}: Props) => {
     [snakeBody],
   );
 
-  const onPause = useCallback(() => {
+  const onPauseClick = useCallback(() => {
     if (status !== STATUS.START && status !== STATUS.ON_PAUSE) {
       setSnakeMove(null);
       setStatus(STATUS.ON_PAUSE);
     }
   }, [status]);
 
-  const onStartOver = useCallback(() => {
+  const onStartOverClick = useCallback(() => {
     if (status !== STATUS.START) {
       setStatus(STATUS.START);
       setIsGameOver(false);
@@ -73,6 +75,38 @@ export const Controller = ({children}: Props) => {
       setNewSnakeBodyPart(null);
     }
   }, [status]);
+
+  const onSaveClick = useCallback(
+    (value: string) => {
+      if (value.length !== 6) {
+        setStatus(STATUS.ON_SAVE_ERROR);
+      }
+
+      if (value.length === 6) {
+        if (status === STATUS.ON_SAVE_ERROR) {
+          setStatus(STATUS.GAME_OVER);
+        }
+
+        const scores: ScoreInfoType[] = Object.keys(scoreHistory).map((item) => getScoreInfo(item));
+        const playerScore = getCurrentScoreInfo(currentScore, scores);
+
+        if (scores.length < MAX_NUMBER_OF_LEADERS) {
+          localStorage.setItem(transformToStorageData(playerScore), value);
+        }
+
+        if (
+          scores.length >= MAX_NUMBER_OF_LEADERS &&
+          scores.some((score) => score.number < playerScore.number)
+        ) {
+          localStorage.removeItem(getMinStorageData(scores));
+          localStorage.setItem(transformToStorageData(playerScore), value);
+        }
+
+        setIsModalOpen(false);
+      }
+    },
+    [scoreHistory, currentScore, status],
+  );
 
   const moveSnakeTimeout = (key: ControlKeys, ms: number) =>
     setInterval(() => {
@@ -154,13 +188,12 @@ export const Controller = ({children}: Props) => {
       const scores: ScoreInfoType[] = Object.keys(scoreHistory).map((item) => getScoreInfo(item));
       const playerScore = getCurrentScoreInfo(currentScore, scores);
 
-      if (scores.length < 12) {
-        localStorage.setItem(transformToStorageData(playerScore), 'ZHENYA');
-      }
-
-      if (scores.length >= 12 && scores.some((score) => score.number < playerScore.number)) {
-        localStorage.removeItem(getMinStorageData(scores));
-        localStorage.setItem(transformToStorageData(playerScore), 'ZHENYA');
+      if (
+        scores.length < MAX_NUMBER_OF_LEADERS ||
+        (scores.length >= MAX_NUMBER_OF_LEADERS &&
+          scores.some((score) => score.number < playerScore.number))
+      ) {
+        setIsModalOpen(true);
       }
     }
   }, [isGameOver]);
@@ -173,9 +206,11 @@ export const Controller = ({children}: Props) => {
         leaderboardData: getLeaderboardViewData(scoreHistory),
         snakeBody,
         appleCoords,
+        isModalOpen,
         onKeyPressed,
-        onPause,
-        onStartOver,
+        onPauseClick,
+        onStartOverClick,
+        onSaveClick,
       }}
     >
       {children}

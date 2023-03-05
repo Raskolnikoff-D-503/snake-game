@@ -1,19 +1,31 @@
 import React from 'react';
-import {Board, ButtonGroup, Controller, Header, InfoBoard, Leaderboard} from '@/components';
+import {
+  Controller,
+  Header,
+  ButtonGroup,
+  Modal,
+  GameBoard,
+  InfoBoard,
+  Leaderboard,
+  NewRecordForm,
+} from '@/components';
 
 import './App.scss';
 
 export const App = () => {
   return (
-    <div className={'app'}>
+    <div className="app">
       <Controller>
         <Header />
-        <div className={'app__container'}>
+        <div className="app__container">
           <InfoBoard />
-          <Board />
+          <GameBoard />
           <Leaderboard />
         </div>
         <ButtonGroup />
+        <Modal>
+          <NewRecordForm />
+        </Modal>
       </Controller>
     </div>
   );

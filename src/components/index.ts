@@ -1,8 +1,11 @@
 export {App} from './App/App';
 export {Controller, ControllerContext} from './Controller';
+export {Button} from './Button/Button';
+export {Modal} from './Modal/Modal';
 export {Header} from './Header/Header';
 export {InfoBoard} from './InfoBoard/InfoBoard';
 export {Leaderboard} from './Leaderboard/Leaderboard';
 export {ButtonGroup} from './ButtonGroup/ButtonGroup';
-export {Board} from './Board/Board';
+export {GameBoard} from './GameBoard/GameBoard';
+export {NewRecordForm} from './NewRecordForm/NewRecordForm';
 export {Cell} from './Cell/Cell';

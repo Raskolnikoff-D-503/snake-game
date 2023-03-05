@@ -7,11 +7,9 @@ export const Header = () => {
   const controllerContext = useContext(ControllerContext);
 
   return (
-    <div className={'header'}>
+    <div className="header">
       <h1>SNAKE GAME</h1>
-      <h2>
-        YOUR CURRENT SCORE: {controllerContext?.points ?? '...'}
-      </h2>
+      <h2>YOUR CURRENT SCORE: {controllerContext?.points ?? '...'}</h2>
     </div>
   );
 };
