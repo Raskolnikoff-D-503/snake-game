@@ -1,4 +1,4 @@
-import {createContext, KeyboardEvent} from 'react';
+import {createContext} from 'react';
 import {LeaderboardDataViewType, SnakeBodyPart, StatusType} from '@/types';
 
 type ControllerContext = {
@@ -8,7 +8,6 @@ type ControllerContext = {
   snakeBody: SnakeBodyPart[];
   appleCoords: number;
   isModalOpen: boolean;
-  onKeyPressed: (event: KeyboardEvent) => void;
   onPauseClick: () => void;
   onStartOverClick: () => void;
   onSaveClick: (value: string) => void;
