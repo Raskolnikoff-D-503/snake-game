@@ -7,9 +7,11 @@ type ControllerContext = {
   leaderboardData: LeaderboardDataViewType[];
   snakeBody: SnakeBodyPart[];
   appleCoords: number;
+  isModalOpen: boolean;
   onKeyPressed: (event: KeyboardEvent) => void;
-  onPause: () => void;
-  onStartOver: () => void;
+  onPauseClick: () => void;
+  onStartOverClick: () => void;
+  onSaveClick: (value: string) => void;
 };
 
 export const ControllerContext = createContext<ControllerContext | null>(null);
