@@ -43,6 +43,15 @@ It's pretty simple project but I had so much fun doing it.
 
 
 
+### Built With
+
+* [![TypeScript][TypeScript]][TypeScript-url]
+* [![React][React.js]][React-url]
+* [![SASS][SASS]][SASS-url]
+* [![Webpack][Webpack]][Webpack-url]
+
+
+
 ### Installation
 
 1. Clone the repo
@@ -80,13 +89,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 Evgeny Gaag - gaagevgenii@gmail.com
 
 
-
-### Built With
-
-* [![TypeScript][TypeScript]][TypeScript-url]
-* [![React][React.js]][React-url]
-* [![SASS][SASS]][SASS-url]
-* [![Webpack][Webpack]][Webpack-url]
 
 [contributors-shield]: https://img.shields.io/github/contributors/Raskolnikoff-D-503/snake-game.svg?style=for-the-badge
 [contributors-url]: https://github.com/Raskolnikoff-D-503/snake-game/graphs/contributors
