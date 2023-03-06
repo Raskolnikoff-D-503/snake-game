@@ -118,7 +118,7 @@ export const Controller = ({children}: Props) => {
         }
       }
     },
-    [snakeMove, isGameOver, isModalOpen],
+    [snakeMove, isModalOpen],
   );
 
   const moveSnakeTimeout = (key: ControlKeys, ms: number) =>
