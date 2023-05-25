@@ -3,19 +3,23 @@
   height: 25px;
   font-family: 'sans-serif';
 
-  &--dark-background {
-    background-color: #96cc99;
+  &:nth-child(even) {
+    background-color: #aacc99;
   }
 
-  &--light-background {
-    background-color: #aacc99;
+  &:nth-child(odd) {
+    background-color: #96cc99;
   }
 }
 
 .apple-placement {
-  background-color: #cb6d68;
+  &:nth-child(n) {
+    background-color: #cb6d68;
+  }
 }
 
 .snake-placement {
-  background-color: #282828;
+  &:nth-child(n) {
+    background-color: #282828;
+  }
 }
